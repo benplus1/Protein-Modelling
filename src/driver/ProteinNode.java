@@ -4,6 +4,9 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
 
+//C:\Users\yangb\workspace\Protein\test
+//22222222222
+
 public class ProteinNode {
 	
 	public static int[][] matrix;
@@ -16,6 +19,7 @@ public class ProteinNode {
 		Scanner sc = new Scanner(System.in);
 		System.out.println("please print your filename");
 		String fileName = sc.nextLine();
+		fileName = "C:/Users/yangb/workspace/Protein/test";
 		
 		FileReader fr =  new FileReader(fileName);
 		@SuppressWarnings("resource")
@@ -35,11 +39,20 @@ public class ProteinNode {
 		
 		System.out.println("please enter your string encoding in base 5: ");
 		String encoding = sc.nextLine();
+		encoding = "22222222222";
 		
 		if (!populate(encoding)) {
 			System.out.println("the encoding was not valid");
 			return;
 		}
+		
+		for (int[] row : matrix)
+		{
+		    System.out.println(Arrays.toString(row));
+		}
+		System.out.println(Arrays.toString(values.toArray()));
+		printCoordinates();
+		System.out.println(size);
 		
 		float solution = calculate();
 		
@@ -53,14 +66,20 @@ public class ProteinNode {
 		
 		Coor tempCoor = new Coor(tempX, tempY);
 		
-		coordinates.add(tempCoor);
-		matrix[tempX][tempY] = values.get(valueCounter);
+		Coor tempCoor1 = new Coor(tempCoor.xCoor, tempCoor.yCoor);
+		coordinates.add(tempCoor1);
+		matrix[tempCoor.xCoor][tempCoor.yCoor] = values.get(valueCounter);
+		System.out.println(matrix[tempCoor.xCoor][tempCoor.yCoor]);
+		System.out.println(tempCoor.xCoor + ", " + tempCoor.yCoor);
 		
-		goRight(tempX, tempY);
+		goRight(tempCoor);
+		//goRight(tempX, tempY);
 		valueCounter++;
-		Coor tempCoor2 = new Coor(tempX, tempY);
+		Coor tempCoor2 = new Coor(tempCoor.xCoor, tempCoor.yCoor);
 		coordinates.add(tempCoor2);
-		matrix[tempX][tempY] = values.get(valueCounter);
+		matrix[tempCoor.xCoor][tempCoor.yCoor] = values.get(valueCounter);
+		System.out.println(matrix[tempCoor.xCoor][tempCoor.yCoor]);
+		System.out.println(tempCoor.xCoor + ", " + tempCoor.yCoor);
 		
 		valueCounter++;
 		int pastMove = 2;
@@ -68,17 +87,32 @@ public class ProteinNode {
 		
 		for (; valueCounter < values.size(); valueCounter++) {
 			int currEncodeValue = Character.getNumericValue(encoding.charAt(encodingCounter));
-			pastMove = nextMove(pastMove, tempX, tempY, currEncodeValue);
-			if (matrix[tempX][tempY] != 0) {
+			pastMove = nextMove(pastMove, tempCoor, currEncodeValue);
+			if (matrix[tempCoor.xCoor][tempCoor.yCoor] != 0) {
+				for (int[] row : matrix)
+				{
+				    System.out.println(Arrays.toString(row));
+				}
+				System.out.println(Arrays.toString(values.toArray()));
+				printCoordinates();
+				System.out.println(size);
 				return false;
 			}
-			matrix[tempX][tempY] = values.get(valueCounter);
-			Coor tempCoor3 = new Coor(tempX, tempY);
+			matrix[tempCoor.xCoor][tempCoor.yCoor] = values.get(valueCounter);
+			System.out.println(matrix[tempCoor.xCoor][tempCoor.yCoor]);
+			System.out.println(tempCoor.xCoor + ", " + tempCoor.yCoor);
+			Coor tempCoor3 = new Coor(tempCoor.xCoor, tempCoor.yCoor);
 			coordinates.add(tempCoor3);
 			encodingCounter++;
 		}
 		
 		return true;
+	}
+	
+	public static void printCoordinates() {
+		for (int i = 0; i < coordinates.size(); i++) {
+			System.out.println(coordinates.get(i).xCoor + ", " + coordinates.get(i).yCoor);
+		}
 	}
 	
 	public static int calculate() {
@@ -95,154 +129,160 @@ public class ProteinNode {
 
 			curr = matrix[x][y];
 
-			sum += curr*matrix[x-1][y];
-			sum += curr*matrix[x+1][y];
-			sum += curr*matrix[x-1][y+1];
-			sum += curr*matrix[x+1][y-1];
-			sum += curr*matrix[x][y+1];
-			sum += curr*matrix[x][y-1];
+			if (x != 0 && x != matrix[0].length-1) {
+				sum += curr*matrix[x-1][y];
+				sum += curr*matrix[x+1][y];
+			}
+			if (y != 0 && y != matrix.length-1) {
+				sum += curr*matrix[x][y+1];
+				sum += curr*matrix[x][y-1];
+			}
+			if (x != 0 && x != matrix.length-1 && y != 0 && y != matrix[0].length-1) {
+				sum += curr*matrix[x-1][y+1];
+				sum += curr*matrix[x+1][y-1];
+			}
 
 		}
 
 		return sum;
 	}
 	
-	public static int nextMove(int pastMove, int runningXCoor, int runningYCoor, int currEncodeValue) {
+	public static int nextMove(int pastMove, Coor coordinate, int currEncodeValue) {
 		switch (pastMove) {
 			case 0: {
 				if (currEncodeValue == 0) {
-					goDownLeft(runningXCoor, runningYCoor);
+					goDownLeft(coordinate);
 					return 4;
 				}
 				else if (currEncodeValue == 1) {
-					goLeft(runningXCoor, runningYCoor);
+					goLeft(coordinate);
 					return 5;
 				}
 				else if (currEncodeValue == 2) {
-					goUpLeft(runningXCoor, runningYCoor);
+					goUpLeft(coordinate);
 					return 0;
 				}
 				else if (currEncodeValue == 3) {
-					goUpRight(runningXCoor, runningYCoor);
+					goUpRight(coordinate);
 					return 1;
 				}
 				else if (currEncodeValue == 4) {
-					goRight(runningXCoor, runningYCoor);
+					goRight(coordinate);
 					return 2;
 				}
 				break;
 			}
 			case 1: {
 				if (currEncodeValue == 0) {
-					goLeft(runningXCoor, runningYCoor);
+					goLeft(coordinate);
 					return 5;
 				}
 				else if (currEncodeValue == 1) {
-					goUpLeft(runningXCoor, runningYCoor);
+					goUpLeft(coordinate);
 					return 0;
 				}
 				else if (currEncodeValue == 2) {
-					goUpRight(runningXCoor, runningYCoor);
+					goUpRight(coordinate);
 					return 1;
 				}
 				else if (currEncodeValue == 3) {
-					goRight(runningXCoor, runningYCoor);
+					goRight(coordinate);
 					return 2;
 				}
 				else if (currEncodeValue == 4) {
-					goDownRight(runningXCoor, runningYCoor);
+					goDownRight(coordinate);
 					return 3;
 				}
 				break;
 			}
 			case 2: {
 				if (currEncodeValue == 0) {
-					goUpLeft(runningXCoor, runningYCoor);
+					goUpLeft(coordinate);
 					return 0;
 				}
 				else if (currEncodeValue == 1) {
-					goUpRight(runningXCoor, runningYCoor);
+					goUpRight(coordinate);
 					return 1;
 				}
 				else if (currEncodeValue == 2) {
-					goRight(runningXCoor, runningYCoor);
+					goRight(coordinate);
 					return 2;
 				}
 				else if (currEncodeValue == 3) {
-					goDownRight(runningXCoor, runningYCoor);
+					goDownRight(coordinate);
 					return 3;
 				}
 				else if (currEncodeValue == 4) {
-					goDownLeft(runningXCoor, runningYCoor);
+					goDownLeft(coordinate);
 					return 4;
 				}
 				break;
 			}
 			case 3: {
 				if (currEncodeValue == 0) {
-					goUpRight(runningXCoor, runningYCoor);
+					goUpRight(coordinate);
 					return 1;
 				}
 				else if (currEncodeValue == 1) {
-					goRight(runningXCoor, runningYCoor);
+					goRight(coordinate);
 					return 2;
 				}
 				else if (currEncodeValue == 2) {
-					goDownRight(runningXCoor, runningYCoor);
+					goDownRight(coordinate);
 					return 3;
 				}
 				else if (currEncodeValue == 3) {
-					goDownLeft(runningXCoor, runningYCoor);
+					goDownLeft(coordinate);
 					return 4;
 				}
 				else if (currEncodeValue == 4) {
-					goLeft(runningXCoor, runningYCoor);
+					goLeft(coordinate);
 					return 5;
 				}
 				break;
 			}
 			case 4: {
 				if (currEncodeValue == 0) {
-					goRight(runningXCoor, runningYCoor);
+					goRight(coordinate);
 					return 2;
 				}
 				else if (currEncodeValue == 1) {
-					goDownRight(runningXCoor, runningYCoor);
+					goDownRight(coordinate);
 					return 3;
 				}
 				else if (currEncodeValue == 2) {
-					goDownLeft(runningXCoor, runningYCoor);
+					goDownLeft(coordinate);
 					return 4;
 				}
 				else if (currEncodeValue == 3) {
-					goLeft(runningXCoor, runningYCoor);
+					goLeft(coordinate);
 					return 5;
 				}
 				else if (currEncodeValue == 4) {
-					goUpLeft(runningXCoor, runningYCoor);
+					goUpLeft(coordinate);
 					return 0;
 				}
 				break;
 			}
 			case 5: {
 				if (currEncodeValue == 0) {
-					goDownRight(runningXCoor, runningYCoor);
+					goDownRight(coordinate);
 					return 3;
 				}
 				else if (currEncodeValue == 1) {
-					goDownLeft(runningXCoor, runningYCoor);
+					goDownLeft(coordinate);
 					return 4;
 				}
 				else if (currEncodeValue == 2) {
-					goLeft(runningXCoor, runningYCoor);
+					goLeft(coordinate);
 					return 5;
 				}
 				else if (currEncodeValue == 3) {
-					goUpLeft(runningXCoor, runningYCoor);
+					goUpLeft(coordinate);
 					return 0;
 				}
 				else if (currEncodeValue == 4) {
-					goUpRight(runningXCoor, runningYCoor);
+					goUpRight(coordinate);
 					return 1;
 				}
 				break;
@@ -255,29 +295,35 @@ public class ProteinNode {
 	
 	
 	
-	public static void goUpLeft(int runningXCoor, int runningYCoor) {
-		runningYCoor--;
+	public static Coor goUpLeft(Coor coordinate) {
+		coordinate.yCoor--;
+		return coordinate;
 	}
 	
-	public static void goUpRight(int runningXCoor, int runningYCoor) {
-		runningXCoor++;
-		runningYCoor--;
+	public static Coor goUpRight(Coor coordinate) {
+		coordinate.xCoor++;
+		coordinate.yCoor--;
+		return coordinate;
 	}
 	
-	public static void goLeft(int runningXCoor, int runningYCoor) {
-		runningXCoor--;
+	public static Coor goLeft(Coor coordinate) {
+		coordinate.xCoor--;
+		return coordinate;
 	}
 	
-	public static void goRight(int runningXCoor, int runningYCoor) {
-		runningXCoor++;
+	public static Coor goRight(Coor coordinate) {
+		coordinate.xCoor++;
+		return coordinate;
 	}
 	
-	public static void goDownLeft(int runningXCoor, int runningYCoor) {
-		runningXCoor--;
-		runningYCoor++;
+	public static Coor goDownLeft(Coor coordinate) {
+		coordinate.xCoor--;
+		coordinate.yCoor++;
+		return coordinate;
 	}
 	
-	public static void goDownRight(int runningXCoor, int runningYCoor) {
-		runningYCoor++;
+	public static Coor goDownRight(Coor coordinate) {
+		coordinate.yCoor++;
+		return coordinate;
 	}
 }
