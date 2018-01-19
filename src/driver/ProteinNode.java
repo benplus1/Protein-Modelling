@@ -81,10 +81,30 @@ public class ProteinNode {
 		return true;
 	}
 	
-	public static float calculate() {
-		
-		
-		return 0;
+	public static int calculate() {
+		int sum = 0;
+
+		int x;
+		int y;
+
+		int curr = 0;
+
+		for(Coor coor : coordinates){
+			x = coor.xCoor;
+			y = coor.yCoor;
+
+			curr = matrix[x][y];
+
+			sum += curr*matrix[x-1][y];
+			sum += curr*matrix[x+1][y];
+			sum += curr*matrix[x-1][y+1];
+			sum += curr*matrix[x+1][y-1];
+			sum += curr*matrix[x][y+1];
+			sum += curr*matrix[x][y-1];
+
+		}
+
+		return sum;
 	}
 	
 	public static int nextMove(int pastMove, int runningXCoor, int runningYCoor, int currEncodeValue) {
