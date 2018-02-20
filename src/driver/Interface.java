@@ -63,7 +63,7 @@ public class Interface {
 			//reading the file
 			System.out.println("please print your filename");
 			String fileName = sc.nextLine();
-			fileName = "C:/Users/yangb/workspace/Protein/test";
+			fileName = "C:/Users/yangb/workspace/Protein/test.txt";
 			
 			//System.out.println("please specify the amount of divisions for the histogram");
 			//int numDivision = sc.nextInt();
