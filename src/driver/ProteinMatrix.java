@@ -63,23 +63,25 @@ public class ProteinMatrix {
 			y = coor.yCoor;
 
 			curr = matrix[x][y];
+			
+			boolean calculated = false;
 
-			if (x != 0) {
+			if (x != 0 && !calculated) {
 				sum += curr*matrix[x-1][y];
 			}
-			if (x != matrix[0].length-1) {
+			if (x != matrix[0].length-1 && !calculated) {
 				sum += curr*matrix[x+1][y];
 			}
-			if (y != 0) {
+			if (y != 0 && !calculated) {
 				sum += curr*matrix[x][y-1];
 			}
-			if (y != matrix.length-1) {
+			if (y != matrix.length-1 && !calculated) {
 				sum += curr*matrix[x][y+1];
 			}
-			if (x != 0 && y != matrix[0].length-1) {
+			if (x != 0 && y != matrix[0].length-1 && !calculated) {
 				sum += curr*matrix[x-1][y+1];
 			}
-			if (x != matrix.length-1 && y != 0) {
+			if (x != matrix.length-1 && y != 0 && !calculated) {
 				sum += curr*matrix[x+1][y-1];
 			}
 
