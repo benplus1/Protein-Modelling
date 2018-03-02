@@ -78,7 +78,7 @@ public class Interface {
 			//reading the file
 			System.out.println("please print your filename");
 			String fileName = sc.nextLine();
-			fileName = "C:/Users/yangb/workspace/Protein/test.txt";
+			fileName = "C:/Users/yangb/workspace/Protein/test2_0.txt";
 			
 			System.out.println("please specify your temperature");
 			String tem = sc.nextLine();
@@ -275,12 +275,13 @@ public class Interface {
 			aggregate_writer.close();
 		}
 		else if (selection.equals("4")) {
+			float mean_field = 50;
 			for (int i = 1; i < 3; i++) {
 				for (int j = 0; j < 8; j++) {
 					if (!((i == 1) && (j == 0)) && !((i==1) && (j==1))) {
 						String fileName = "test" + i + "_" + j;
 						String outputLine = "encoding_scores_" + i + "_" + j + ".txt";
-						runOneProteinMatrix(fileName, outputLine, 0, 0, 0, 100);
+						runOneProteinMatrix(fileName, outputLine, 0, 0, mean_field, 100);
 					}
 				}
 			}
