@@ -12,7 +12,7 @@ public class ProteinMatrix {
 	public ArrayList<Integer> values;
 	public int size;
 	public String encoding;
-	public int score;
+	public float score;
 	
 	public ProteinMatrix(int size) {
 		matrix = new int[size*2][size*2];
@@ -50,13 +50,13 @@ public class ProteinMatrix {
 		br.close();
 	}
 	
-	public int calculate() {
+	public float calculate(float mean_field, float entropy, float temperature) {
 		int sum = 0;
 
 		int x;
 		int y;
 
-		int curr = 0;
+		float curr = 0;
 
 		for(Coor coor : coordinates){
 			x = coor.xCoor;
@@ -67,27 +67,49 @@ public class ProteinMatrix {
 			boolean calculated = false;
 
 			if (x != 0 && !calculated) {
-				sum += curr*matrix[x-1][y];
+				sum += (curr*matrix[x-1][y]/2);
+				if (matrix[x-1][y] == 0) {
+					sum += mean_field*curr;
+				}
 			}
 			if (x != matrix[0].length-1 && !calculated) {
-				sum += curr*matrix[x+1][y];
+				sum += (curr*matrix[x+1][y]/2);
+				if (matrix[x+1][y] == 0) {
+					sum += mean_field*curr;
+				}
 			}
 			if (y != 0 && !calculated) {
-				sum += curr*matrix[x][y-1];
+				sum += (curr*matrix[x][y-1]/2);
+				if (matrix[x][y-1] == 0) {
+					sum += mean_field*curr;
+				}
 			}
 			if (y != matrix.length-1 && !calculated) {
-				sum += curr*matrix[x][y+1];
+				sum += (curr*matrix[x][y+1]/2);
+				if (matrix[x][y+1] == 0) {
+					sum += mean_field*curr;
+				}
 			}
 			if (x != 0 && y != matrix[0].length-1 && !calculated) {
-				sum += curr*matrix[x-1][y+1];
+				sum += (curr*matrix[x-1][y+1]/2);
+				if (matrix[x-1][y+1] == 0) {
+					sum += mean_field*curr;
+				}
 			}
 			if (x != matrix.length-1 && y != 0 && !calculated) {
-				sum += curr*matrix[x+1][y-1];
+				sum += (curr*matrix[x+1][y-1]/2);
+				if (matrix[x+1][y-1] == 0) {
+					sum += mean_field*curr;
+				}
 			}
 
+			
+			if (entropy != 0) {
+				sum -= temperature*entropy;
+			}
 		}
 
-		return sum/2;
+		return sum;
 	}
 	
 	public void printCoordinates() {
