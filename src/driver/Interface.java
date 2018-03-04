@@ -171,7 +171,8 @@ public class Interface {
 			System.out.println("please enter the number of divisions you would like");
 			int num_divisions = Integer.parseInt(sc.nextLine());
 			
-			num_divisions = 100;
+			num_divisions = 135;
+			max = 135*6000;
 			
 	    	float quotient = (float) max / num_divisions;
 			
@@ -276,13 +277,13 @@ public class Interface {
 		}
 		else if (selection.equals("4")) {
 			float mean_field = 50;
-			for (int i = 1; i < 3; i++) {
-				for (int j = 0; j < 8; j++) {
-					if (!((i == 1) && (j == 0)) && !((i==1) && (j==1))) {
+			for (int i = 1; i < 2; i++) {
+				for (int j = 4; j < 8; j++) {
+					//if (!((i == 1) && (j == 0)) && !((i==1) && (j==1))) {
 						String fileName = "test" + i + "_" + j;
 						String outputLine = "encoding_scores_" + i + "_" + j + ".txt";
 						runOneProteinMatrix(fileName, outputLine, 0, 0, mean_field, 100);
-					}
+					//}
 				}
 			}
 		}
@@ -449,7 +450,8 @@ public class Interface {
 		
 		float max = top10List.get(0).score;
 		
-		num_divisions = 100;
+		num_divisions = 135;
+		max = 6000*135;
 		
     	float quotient = (float) max / num_divisions;
 		
