@@ -277,12 +277,25 @@ public class Interface {
 		}
 		else if (selection.equals("4")) {
 			float mean_field = 50;
-			for (int i = 1; i < 2; i++) {
-				for (int j = 4; j < 8; j++) {
+			for (int i = 1; i < 3; i++) {
+				for (int j = 0; j < 8; j++) {
 					//if (!((i == 1) && (j == 0)) && !((i==1) && (j==1))) {
 						String fileName = "test" + i + "_" + j;
-						String outputLine = "encoding_scores_" + i + "_" + j + ".txt";
+						String outputLine = "mean_field_" + mean_field + "_encoding_scores_" + i + "_" + j + ".txt";
 						runOneProteinMatrix(fileName, outputLine, 0, 0, mean_field, 100);
+						System.out.println(mean_field + i + j + "done");
+					//}
+				}
+			}
+			mean_field = 0;
+			for (int i = 1; i < 3; i++) {
+				for (int j = 0; j < 8; j++) {
+					//if (!((i == 1) && (j == 0)) && !((i==1) && (j==1))) {
+						String fileName = "test" + i + "_" + j;
+						String outputLine = "mean_field_" + mean_field + "_encoding_scores_" + i + "_" + j + ".txt";
+						runOneProteinMatrix(fileName, outputLine, 0, 0, mean_field, 100);
+						System.out.println(mean_field + i + j + "done");
+
 					//}
 				}
 			}
@@ -313,6 +326,32 @@ public class Interface {
 			}
 			System.out.println(max);
 		}
+		else if (selection.equals("13")) {
+			String fileName = "C:/Users/yangb/workspace/Protein/gammatest.txt";
+			
+			ProteinMatrix result = new ProteinMatrix(fileName, true);
+			
+			//String encoding = "22222222222";
+			
+			result.sigmaval[0] = 2;
+			result.sigmaval[1] = 2;
+			result.sigmaval[2] = 2;
+			result.sigmaval[3] = 2;
+			result.sigmaval[4] = 2;
+			result.sigmaval[5] = 2;
+			result.sigmaval[6] = 2;
+			result.sigmaval[7] = 2;
+			result.sigmaval[8] = 2;
+			result.sigmaval[9] = 1;
+			result.sigmaval[10] = 1;
+			result.sigmaval[11] = 1;
+			result.sigmaval[12] = 1;
+			
+			result.generateMu();
+			
+			System.out.println(Arrays.toString(result.muval.toArray()));
+			System.out.println(result.size);
+		}
 	}
 	
 	public static boolean populate(String encoding, ProteinMatrix result) {
@@ -324,7 +363,7 @@ public class Interface {
 		
 		Coor tempCoor1 = new Coor(tempCoor.xCoor, tempCoor.yCoor);
 		result.coordinates.add(tempCoor1);
-		result.matrix[tempCoor.xCoor][tempCoor.yCoor] = result.values.get(valueCounter);
+		result.matrix[tempCoor.xCoor][tempCoor.yCoor] = result.muval.get(valueCounter);
 		//System.out.println(result.matrix[tempCoor.xCoor][tempCoor.yCoor]);
 		//System.out.println(tempCoor.xCoor + ", " + tempCoor.yCoor);
 		
@@ -332,7 +371,7 @@ public class Interface {
 		valueCounter++;
 		Coor tempCoor2 = new Coor(tempCoor.xCoor, tempCoor.yCoor);
 		result.coordinates.add(tempCoor2);
-		result.matrix[tempCoor.xCoor][tempCoor.yCoor] = result.values.get(valueCounter);
+		result.matrix[tempCoor.xCoor][tempCoor.yCoor] = result.muval.get(valueCounter);
 		//System.out.println(result.matrix[tempCoor.xCoor][tempCoor.yCoor]);
 		//System.out.println(tempCoor.xCoor + ", " + tempCoor.yCoor);
 		
@@ -340,14 +379,14 @@ public class Interface {
 		int pastMove = 2;
 		int encodingCounter = 0;
 		
-		for (; valueCounter < result.values.size(); valueCounter++) {
+		for (; valueCounter < result.muval.size(); valueCounter++) {
 			int currEncodeValue = Character.getNumericValue(encoding.charAt(encodingCounter));
 			pastMove = tempCoor.nextMove(pastMove, currEncodeValue);
 			if (result.matrix[tempCoor.xCoor][tempCoor.yCoor] != 0) {
 				//printProteinMatrix(result);
 				return false;
 			}
-			result.matrix[tempCoor.xCoor][tempCoor.yCoor] = result.values.get(valueCounter);
+			result.matrix[tempCoor.xCoor][tempCoor.yCoor] = result.muval.get(valueCounter);
 			//System.out.println(result.matrix[tempCoor.xCoor][tempCoor.yCoor]);
 			//System.out.println(tempCoor.xCoor + ", " + tempCoor.yCoor);
 			Coor tempCoor3 = new Coor(tempCoor.xCoor, tempCoor.yCoor);
@@ -384,7 +423,7 @@ public class Interface {
 		encodingScores.createNewFile();
 		FileWriter writer = new FileWriter(encodingScores); 
 		
-		String nufileName = "C:/Users/yangb/workspace/Protein/" + fileName + ".txt";
+		String nufileName = "C:/Users/yangb/workspace/Protein/test_files/" + fileName + ".txt";
 		
 		FileReader fr =  new FileReader(nufileName);
 		BufferedReader br = new BufferedReader(fr);
@@ -435,16 +474,18 @@ public class Interface {
 				if (top10List.size() > 10) {
 					top10List.remove(10);
 				}
-				System.out.println("the current encoding was added successfully to the top 10 list");
+				//System.out.println("the current encoding was added successfully to the top 10 list");
 			}
 			//TimeUnit.SECONDS.sleep(1);
 		}
 		
+		/*
 		for (int k = 0; k < top10List.size(); k++) {
 			top10List.get(k).printProteinMatrix();
 		}
+		*/
 		
-		System.out.println("\nmax score is: " + top10List.get(0).score + "\n");
+		//System.out.println("\nmax score is: " + top10List.get(0).score + "\n");
 		
 		writer.close();
 		
@@ -481,7 +522,7 @@ public class Interface {
 		    }
 		}
 		
-		File output_aggregate = new File("output_aggregate_" + fileName + ".csv");
+		File output_aggregate = new File("mean_field_" + mean_field + "_output_aggregate_" + fileName + ".csv");
 		
 		FileWriter aggregate_writer = new FileWriter(output_aggregate);
 		
